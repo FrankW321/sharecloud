@@ -24,14 +24,14 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose, on
     }
   }, [task, isOpen]);
 
-  const validate = () => {
+  const validate = (name: string, start: string, end: string) => {
     const validationErrors: string[] = [];
 
-    if (!taskName) {
+    if (!name) {
       validationErrors.push("Task name is required.");
     }
 
-    if (endDate && dayjs(endDate).isBefore(dayjs(startDate))) {
+    if (end && dayjs(end).isBefore(dayjs(start))) {
       validationErrors.push("End date cannot be earlier than the start date.");
     }
 
@@ -40,20 +40,27 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({ task, isOpen, onClose, on
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    let newTaskName = taskName;
+    let newStartDate = startDate;
+    let newEndDate = endDate;
+
     if (name === "taskName") {
-      setTaskName(value);
+      newTaskName = value;
+      setTaskName(newTaskName);
     } else if (name === "startDate") {
-      setStartDate(value);
+      newStartDate = value;
+      setStartDate(newStartDate);
     } else if (name === "endDate") {
-      setEndDate(value);
+      newEndDate = value;
+      setEndDate(newEndDate);
     }
 
-    const validationErrors = validate();
+    const validationErrors = validate(newTaskName, newStartDate, newEndDate);
     setErrors(validationErrors);
   };
 
   const handleSave = () => {
-    const validationErrors = validate();
+    const validationErrors = validate(taskName, startDate, endDate);
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
     } else {
